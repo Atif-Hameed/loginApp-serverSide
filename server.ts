@@ -18,9 +18,11 @@ app.use(express.json())
 
 //routes import
 import testRouter from './routes/test'
+import registerRoutr from './routes/userRoute'
 
 //routes
 app.use('/api/v1', testRouter)
+app.use('/api/v1/user', registerRoutr)
 
 //test
 app.get('/', (req, resp) => {
