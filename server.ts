@@ -2,6 +2,7 @@ import express from 'express'
 import cors from 'cors'
 import ConnectDb from './config/config'
 import dotenv from 'dotenv'
+import cookieParser from 'cookie-parser'
 
 //env config
 dotenv.config();
@@ -15,6 +16,7 @@ const app = express()
 //middlewares
 app.use(cors())
 app.use(express.json())
+app.use(cookieParser())
 
 //routes import
 import testRouter from './routes/test'
