@@ -3,6 +3,7 @@ import { userModel, User } from '../models/userModel'
 import otpGenerate from 'otp-generator'
 import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
+import { sendVerificationEmail } from './mailer'
 
 interface controllerTypes {
     (req: Request, res: Response): void
@@ -309,6 +310,32 @@ export const setnewPassController: controllerTypes = async (req, res) => {
         res.status(500).send({
             success: false,
             message: 'OTP Generate API Error',
+            error
+        })
+    }
+}
+
+
+//registerEmail
+export const registerEmailController:controllerTypes = async(req, res) => {
+    try {
+        const {userName, email} = req.body
+        // const user = await userModel.findOne({userName})
+        // if(!user){
+        //     return res.status(404).send({
+        //         success : false,
+        //         message : 'User not exist'
+        //     })
+        // }
+        await sendVerificationEmail(userName, email);
+        res.status(200).send({
+            success : true,
+            message : 'Email send successfully! Please verify'
+        })
+    } catch (error) {
+        res.status(500).send({
+            success: false,
+            message: 'Register mail API Error',
             error
         })
     }

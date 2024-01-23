@@ -1,5 +1,5 @@
 import express from 'express'
-import { getUserController, optGenerateController, setnewPassController, signUpController, singInController, updateUserController, verifyOTPCOntroller } from '../controllers/usersController'
+import { getUserController, optGenerateController, registerEmailController, setnewPassController, signUpController, singInController, updateUserController, verifyOTPCOntroller } from '../controllers/usersController'
 import { verifyUser } from '../middlewares/verifyUser'
 import { isAuthentic, localVariables } from '../middlewares/isAuthentic'
 
@@ -25,5 +25,8 @@ router.get('/verifyOTP', verifyOTPCOntroller)
 
 //ResetPassword
 router.put('/setNewPass', verifyUser, setnewPassController)
+
+//registerEmail
+router.post('/registerMail', registerEmailController)
 
 export default router
