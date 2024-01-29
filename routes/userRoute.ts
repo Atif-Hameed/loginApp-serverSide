@@ -1,4 +1,4 @@
-import express from 'express'
+import express, { Request, Response } from 'express'
 import { getUserController, optGenerateController, registerEmailController, setnewPassController, signUpController, singInController, updateUserController, verifyOTPCOntroller } from '../controllers/usersController'
 import { verifyUser } from '../middlewares/verifyUser'
 import { isAuthentic, localVariables } from '../middlewares/isAuthentic'
@@ -7,6 +7,9 @@ const router = express.Router()
 
 //registerUser
 router.post('/register', signUpController)
+
+//authenticateUser
+router.post('/authenticate', (req:Request, res:Response) => res.end() )
 
 //loginUSer
 router.post('/login', singInController)

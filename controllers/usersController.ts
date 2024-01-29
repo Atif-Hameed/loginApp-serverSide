@@ -23,7 +23,7 @@ export const signUpController: controllerTypes = async (req, res) => {
 
         const userExist: User | null = await userModel.findOne({ email });
         if (userExist) {
-            return res.status(500).send({
+            return res.status(409).send({
                 success: false,
                 message: 'User already exists'
             })
@@ -31,7 +31,7 @@ export const signUpController: controllerTypes = async (req, res) => {
 
         const userNameExist = await userModel.findOne({ userName })
         if (userNameExist) {
-            return res.status(500).send({
+            return res.status(400).send({
                 success: false,
                 message: 'UserName already exist, try a unique one'
             })
@@ -77,9 +77,10 @@ export const singInController: controllerTypes = async (req, res) => {
         const validPass = await user.comparePassword(password)
 
         if (!validPass) {
-            return res.status(500).send({
+            return res.status(401).send({
                 success: false,
-                message: 'Invalid cridentials'
+                message: 'Invalid cridentials',
+                error : response
             })
         }
 
@@ -127,7 +128,7 @@ export const getUserController: controllerTypes = async (req, res) => {
 
         res.status(200).send({
             success: true,
-            message: 'User Data fetched successfully',
+            message: 'User Found',
             user
         })
 
@@ -222,6 +223,7 @@ export const verifyOTPCOntroller: controllerTypes = (req, res) => {
 }
 
 
+//resetSession
 export const createResetSession: controllerTypes = (req, res) => {
     if (req.app.locals.resetSession) {
         req.app.locals.resetSession = false
@@ -319,7 +321,7 @@ export const setnewPassController: controllerTypes = async (req, res) => {
 //registerEmail
 export const registerEmailController:controllerTypes = async(req, res) => {
     try {
-        const {userName, email} = req.body
+        const {userName, email, msg} = req.body
         // const user = await userModel.findOne({userName})
         // if(!user){
         //     return res.status(404).send({
@@ -327,7 +329,7 @@ export const registerEmailController:controllerTypes = async(req, res) => {
         //         message : 'User not exist'
         //     })
         // }
-        await sendVerificationEmail(userName, email);
+        await sendVerificationEmail(userName, email, msg);
         res.status(200).send({
             success : true,
             message : 'Email send successfully! Please verify'

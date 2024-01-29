@@ -1,10 +1,10 @@
 import nodemailer from 'nodemailer'
 import { userModel } from '../models/userModel';
 
-export const sendVerificationEmail = async (email: string, userName: string) => {
+export const sendVerificationEmail = async (email: string, userName: string, msg?:string) => {
     try {
         const user = await userModel.findOne({ email })
-        const token = user?.generateToken()
+        // const token = user?.generateToken()
 
         const transporter = nodemailer.createTransport({
             service: 'gmail',
@@ -16,10 +16,10 @@ export const sendVerificationEmail = async (email: string, userName: string) => 
 
         await transporter.sendMail({
             from : 'atifhameed11312@gmail.com',
-            to : 'atifhameed2002@gmail.com',
-            subject : 'Test Email Verification',
-            text : `Hi ${userName}! Please click the following link to verify your email, `,
-            html : `<a href="http://localhost:3000/verifyMail?token=${token}">Verify Email</a>`,
+            to : 'mohsinhameed113@gmail.com',
+            subject : 'OTP Verification',
+            text : `Hi ${userName}! `,
+            html : `${msg}`,
         })
 
     } catch (error) {
