@@ -80,7 +80,7 @@ export const singInController: controllerTypes = async (req, res) => {
             return res.status(401).send({
                 success: false,
                 message: 'Invalid cridentials',
-                error : response
+                error: response
             })
         }
 
@@ -165,7 +165,14 @@ export const updateUserController: controllerTypes = async (req, res) => {
             success: true,
             message: 'Data updated successfully'
         })
-    } catch (error) {
+    } catch (error: any) {
+        //Cast error || object ID error
+        if (error.name === 'CastError') {
+            return res.status(500).send({
+                success: false,
+                message: 'Invalid Id'
+            })
+        }
         res.status(500).send({
             success: false,
             message: 'Update User Data API Error',
@@ -275,10 +282,10 @@ export const createResetSession: controllerTypes = (req, res) => {
 export const setnewPassController: controllerTypes = async (req, res) => {
     try {
 
-        if(!req.app.locals.resetSession){
+        if (!req.app.locals.resetSession) {
             return res.status(440).send({
-                success : false,
-                message : 'Session Expired'
+                success: false,
+                message: 'Session Expired'
             })
         }
 
@@ -291,21 +298,21 @@ export const setnewPassController: controllerTypes = async (req, res) => {
             })
         }
         const hashedPass = await bcrypt.hash(newPass, 10)
-        
+
         if (hashedPass) {
-            await userModel.updateOne({userName : userName}, {password : hashedPass})
+            await userModel.updateOne({ userName: userName }, { password: hashedPass })
             req.app.locals.resetSession = false
-        } else{
+        } else {
             return res.status(400).send({
-                success : false,
-                message : 'Enabled to hashed password'
+                success: false,
+                message: 'Enabled to hashed password'
             })
         }
         await user.save();
         res.status(200).send({
             success: true,
             message: 'Record Updated successfully...',
-            pass : hashedPass
+            pass: hashedPass
         })
 
     } catch (error) {
@@ -319,9 +326,9 @@ export const setnewPassController: controllerTypes = async (req, res) => {
 
 
 //registerEmail
-export const registerEmailController:controllerTypes = async(req, res) => {
+export const registerEmailController: controllerTypes = async (req, res) => {
     try {
-        const {userName, email, msg} = req.body
+        const { userName, email, msg } = req.body
         // const user = await userModel.findOne({userName})
         // if(!user){
         //     return res.status(404).send({
@@ -331,8 +338,8 @@ export const registerEmailController:controllerTypes = async(req, res) => {
         // }
         await sendVerificationEmail(userName, email, msg);
         res.status(200).send({
-            success : true,
-            message : 'Email send successfully! Please verify'
+            success: true,
+            message: 'Email send successfully! Please verify'
         })
     } catch (error) {
         res.status(500).send({
