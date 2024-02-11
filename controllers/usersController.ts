@@ -1,9 +1,9 @@
 import { Request, Response, response } from 'express'
 import { userModel, User } from '../models/userModel'
 import otpGenerate from 'otp-generator'
-import jwt from 'jsonwebtoken'
 import bcrypt from 'bcrypt'
 import { sendVerificationEmail } from './mailer'
+import jwt, { JwtPayload } from 'jsonwebtoken'
 
 interface controllerTypes {
     (req: Request, res: Response): void
@@ -145,7 +145,9 @@ export const getUserController: controllerTypes = async (req, res) => {
 //updateUser Data
 export const updateUserController: controllerTypes = async (req, res) => {
     try {
-        const user = await userModel.findById(req.query.id)
+        const { token } = req.cookies
+        const decodeData = jwt.verify(token, process.env.JWT_KEY!) as JwtPayload
+        const user = await userModel.findById(decodeData.id)
         const { fname, lname, mobile, email, adress, userName } = req.body
         if (!user) {
             return res.status(404).send({
